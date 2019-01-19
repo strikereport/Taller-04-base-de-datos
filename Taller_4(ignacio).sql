@@ -48,6 +48,9 @@ INSERT INTO "SYSTEM"."MOVIMIENTO" (NUMERO, OPERACION) VALUES ('888', 'D')
 -- Bloque
 
 Declare
+    cursor c is select * from MOVIMIENTO;
+    cant NUMBER; 
+    
     Procedure actualiza (u_numero in CUENTA.NUMERO%TYPE, u_nombre in CUENTA.NOMBRE%TYPE , u_direccion in CUENTA.DIRECCION%TYPE ,
                          u_ciudad in CUENTA.CIUDAD%TYPE, u_fono in CUENTA.FONO%TYPE , u_saldo in CUENTA.SALDO%TYPE)
         IS 
@@ -90,9 +93,6 @@ Declare
       
     end borra;  
 
-    cursor c is select * from MOVIMIENTO;
-
-    cant NUMBER; 
 
 begin
   for r in c loop
@@ -110,5 +110,5 @@ begin
       borra(r.NUMERO);  
     end if;
 
-  end loop
+  end loop;
 end;                       
