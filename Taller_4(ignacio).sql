@@ -126,7 +126,7 @@ CREATE TABLE COMPRA
 
 
 create or replace trigger valCompra 
-after insert on COMPRA 
+before insert on COMPRA 
 for each row
 Declare
 suma NUMBER;
@@ -134,10 +134,11 @@ begin
   select sum(MONTOCOMPRA)
     into suma
     from COMPRA
-   where NUMCUENTA = :new.NUMCUENTA and RUTCLIENTE = :new.RUTCLIENTE and to_char(FECHACOMPRA,'DD/MM/YYYY') = to_char(:new.FECHACOMPRA,'DD/MM/YYYY'); 
-  if suma > 200000 then
-    delete from COMPRA
-     where RUTCLIENTE = :new.RUTCLIENTE and NUMCUENTA = :new.NUMCUENTA and MONTOCOMPRA = :new.MONTOCOMPRA and FECHACOMPRA = :new.FECHACOMPRA ;
+   where NUMCUENTA = :new.NUMCUENTA and RUTCLIENTE = :new.RUTCLIENTE and trunc(FECHACOMPRA) = trunc(:new.FECHACOMPRA); 
+ 
+  if (suma + :new.MONTOCOMPRA > 200000) then
+    raise_application_error(-20000, 'monto diario exedido');
   end if;  
 
 end;
+
