@@ -47,3 +47,30 @@ INSERT INTO "SYSTEM"."MOVIMIENTO" (NUMERO, OPERACION) VALUES ('888', 'D')
 
 -- Bloque
 
+Declare
+    Procedure actualiza (u_numero in CUENTA.NUMERO%TYPE, u_nombre in CUENTA.NOMBRE%TYPE , u_direccion in CUENTA.DIRECCION%TYPE ,
+                         u_ciudad in CUENTA.CIUDAD%TYPE, u_fono in CUENTA.FONO%TYPE , u_saldo in CUENTA.SALDO%TYPE)
+        IS 
+        od_numero CUENTA.NUMERO%TYPE;
+        od_nombre CUENTA.NOMBRE%TYPE;
+        od_direccion CUENTA.DIRECCION%TYPE;
+        od_ciudad CUENTA.CIUDAD%TYPE;
+        od_fono CUENTA.FONO%TYPE;
+        od_saldo CUENTA.SALDO%TYPE;
+        
+        begin
+            select NUMERO , NOMBRE , DIRECCION , CIUDAD , FONO , SALDO 
+              into od_numero , od_nombre , od_direccion , od_ciudad , od_fono  , od_saldo
+              from CUENTA
+             where NUMERO = u_numero;
+
+             update CUENTA
+                set  
+                    NOMBRE = nvl(u_nombre,od_nombre), 
+                    DIRECCION = nvl(u_direccion,od_direccion), 
+                    CIUDAD = nvl(u_ciudad,od_ciudad), 
+                    FONO = nvl(u_fono,od_fono), 
+                    SALDO = nvl(u_saldo,od_saldo)
+              where NUMERO = u_numero;
+                
+        end actualiza;
