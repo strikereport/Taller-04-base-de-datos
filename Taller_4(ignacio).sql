@@ -73,4 +73,42 @@ Declare
                     SALDO = nvl(u_saldo,od_saldo)
               where NUMERO = u_numero;
                 
-        end actualiza;
+    end actualiza;
+    
+    Procedure inserta (i_numero in CUENTA.NUMERO%TYPE, i_nombre in CUENTA.NOMBRE%TYPE , i_direccion in CUENTA.DIRECCION%TYPE ,
+                       i_ciudad in CUENTA.CIUDAD%TYPE, i_fono in CUENTA.FONO%TYPE , i_saldo in CUENTA.SALDO%TYPE)
+        IS
+        begin
+          insert into CUENTA
+          values (i_numero , i_nombre  , i_direccion  , i_ciudad , i_fono  , i_saldo );
+    end inserta; 
+    Procedure borra(d_numero in CUENTA.NUMERO%TYPE)
+        IS 
+        begin
+        delete from CUENTA
+         where NUMERO = d_numero ; 
+      
+    end borra;  
+
+    cursor c is select * from MOVIMIENTO;
+
+    cant NUMBER; 
+
+begin
+  for r in c loop
+    
+    select count(*)
+      into cant
+      from CUENTA
+     where NUMERO = r.NUMERO;
+    
+    if cant > 0 and (r.OPERACION = 'I' or r.OPERACION = 'U') then
+      actualiza(r.NUMERO,r.NOMBRE,r.DIRECCION, r.CIUDAD , r.FONO , r.SALDO);
+    elsif r.OPERACION = 'I' or r.OPERACION = 'U' then
+      inserta(r.NUMERO,r.NOMBRE,r.DIRECCION, r.CIUDAD , r.FONO , r.SALDO);
+    elsif cant > 0 then
+      borra(r.NUMERO);  
+    end if;
+
+  end loop
+end;                       
