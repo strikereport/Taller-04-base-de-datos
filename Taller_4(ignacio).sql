@@ -142,3 +142,40 @@ begin
 
 end;
 
+-- EJ 1
+create or replace function digitoVerificador(rut in varchar2)
+return varchar2 
+is 
+  resultado number:=0;
+  contador number(3):=2;
+  numero varchar2(255);
+begin
+ for pos in reverse 1..length(rut) loop
+   numero:=substr(rut,pos,1);
+   if contador>7 then
+      contador:=2;
+   end if;
+   resultado:=resultado + (to_number(numero)*contador);
+   contador:=contador+1;
+ end loop;
+ resultado:=11-mod(resultado,11);
+ if resultado=11 then
+   numero:='k';
+ else if resultado =10 then
+   numero:='0';
+ else 
+   numero:=to_char(resultado);
+ end if;  
+ end if;
+ return rut||'-'||numero;
+end;
+
+set serveroutput on;
+declare
+ rut varchar2(255);
+begin 
+ select digitoVerificador(&rutt)into rut from table1;
+ dbms_output.put_line('--------------------------------------------');
+ dbms_output.put_line('Rut: '||rut);
+end;
+
